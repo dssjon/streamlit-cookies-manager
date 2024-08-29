@@ -34,18 +34,20 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
 Streamlit.setComponentReady()
 Streamlit.setFrameHeight(0)
 
+// Updated to support sameSite and Secure for mobile browsers:
 
 function saveCookies(queue: { [k in string]: CookieSpec }) {
     Object.keys(queue).forEach((name) => {
         const spec = queue[name]
-        if (spec.value === null)
-            targetDocument.cookie = `${encodeURIComponent(name)}=; max-age=0; path=${encodeURIComponent(spec.path)}`
-        else {
+        if (spec.value === null) {
+            targetDocument.cookie = `${encodeURIComponent(name)}=; max-age=0; path=${encodeURIComponent(spec.path)}; SameSite=Lax; Secure`
+        } else {
             const date = new Date(spec.expires_at)
             targetDocument.cookie = (
                 `${encodeURIComponent(name)}=${encodeURIComponent(spec.value)};` +
                 ` expires=${date.toUTCString()};` +
-                ` path=${encodeURIComponent(spec.path)};`
+                ` path=${encodeURIComponent(spec.path)};` +
+                ` SameSite=Lax; Secure`
             )
         }
     })
